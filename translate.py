@@ -10,10 +10,12 @@ def main():
 
 
 def get_args():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    with open(LANG_TABLE, 'r') as f:
+        lang_tb = f.read()
     parser.add_argument('target_words', help="target translate words", type=str)
-    parser.add_argument('--lang', '-l', help="language you use", default="auto", type=str)
-    parser.add_argument('--to_lang', '-t', help="translate to the lang", default='zh')
+    parser.add_argument('--lang', '-l', help=f"language you use\n{lang_tb}", default="auto", type=str)
+    parser.add_argument('--to_lang', '-t', '-f', help="translate to the lang", default='zh')
     return parser.parse_args()
 
 
@@ -69,6 +71,7 @@ def translate():
         print(f'\33[36m[{from_lang}-{to_lang}]\33[0m \33[32m{trans}\33[0m')
 
     except Exception:
+        print(rjson)
         print('\033[0;31;40mSomething has gone Wrong! Please check your config file!\033[0m')
 
 

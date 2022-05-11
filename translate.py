@@ -1,21 +1,22 @@
+from trans_tools import command_mode
 from utils.settings import *
 import requests
 import argparse
 from hashlib import md5
 import random
-
-
-def main():
-    pass
+from utils import *
+from utils.api import *
+import sys
 
 
 def get_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     with open(LANG_TABLE, 'r') as f:
         lang_tb = f.read()
-    parser.add_argument('target_words', help="target translate words", type=str)
+    parser.add_argument('target_words', help="target translate words. Enter number '0' to activate command mode", type=str)
     parser.add_argument('--lang', '-l', help=f"language you use\n{lang_tb}", default="auto", type=str)
     parser.add_argument('--to_lang', '-t', '-f', help="translate to the lang", default='zh')
+    parser.add_argument('-c', help='use config file', action='store_true')
     return parser.parse_args()
 
 
@@ -37,8 +38,19 @@ def get_salt() -> str:
 
 def translate():
     args = get_args()
+
+    check_config()
+
     query = args.target_words
-    if is_contains_chinese(query):
+    if query[0] == '0':
+        command_mode()
+        return
+
+    if args.c:
+        lang = CONFIG.config['from_lang']
+        to = CONFIG.config['to_lang']
+
+    elif is_contains_chinese(query):
         lang = 'zh'
         to = 'en'
 
@@ -49,30 +61,38 @@ def translate():
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     salt = get_salt()
     params = {
-        'appid': APP_ID,
+        'appid': CONFIG.config['appid'],
         'q': query,
         'from': lang,
         'to': to,
         'salt': salt,
-        'sign': make_md5(APP_ID + query + salt + APP_KEY)
+        'sign': make_md5(CONFIG.config['appid'] + query + salt + CONFIG.config['appkey'])
     }
     rjson = {}
 
     try:
-        res = requests.post(REQUEST_URL, params=params, headers=headers)
-        rjson = res.json()
+        rjson = get_trans(params=params, headers=headers)
     except Exception as e:
+        if DEBUG:
+            print(e)
         print("\033[0;31;mSomething has gone Wrong! Probably due to your NetWork Status.\033[0m")
-
     try:
-        from_lang = rjson['from']
-        to_lang = rjson['to']
-        trans = rjson["trans_result"][0]['dst']
-        print(f'\33[36m[{from_lang}-{to_lang}]\33[0m \33[32m{trans}\33[0m')
+        parse_res_json(rjson)
 
-    except Exception:
-        print(rjson)
-        print('\033[0;31;40mSomething has gone Wrong! Please check your config file!\033[0m')
+        with open(HISTORY, "r+", encoding="utf-8") as file:
+            history = json.load(file)
+            history['history'].append(rjson)
+            file.seek(0)
+            json.dump(history, file, indent=4, ensure_ascii=False)
+
+    except FileNotFoundError as e:
+        with open(HISTORY, "w", encoding="utf-8") as file:
+            history = {
+                'history': []
+            }
+            history['history'].append(rjson)
+            file.seek(0)
+            json.dump(history, file, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

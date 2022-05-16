@@ -23,7 +23,7 @@ def make_md5(s, encoding='utf-8'):
 
 
 # 检验是否含有中文字符
-def is_contains_chinese(strs):
+def is_contains_chinese(strs: str):
     for _char in strs:
         if '\u4e00' <= _char <= '\u9fa5':
             return True
@@ -32,3 +32,5 @@ def is_contains_chinese(strs):
 
 def get_salt() -> str:
     return str(random.randint(32768, 65536))
+
+

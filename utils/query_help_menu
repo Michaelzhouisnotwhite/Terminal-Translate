@@ -1,0 +1,7 @@
+     == Query Options ==
+-------------------------------
+Number  |  Functional          |
+-------------------------------
+0       |  command mode        |
+1       |  translate clipboard |
+2       |  translate history   |

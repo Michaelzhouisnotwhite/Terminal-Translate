@@ -3,6 +3,11 @@ from hashlib import md5
 
 from .settings import *
 import random
+from colorprt import Fore, ColorprtConfig
+
+warning_prt = ColorprtConfig(foreground=Fore.RED)
+success_prt = ColorprtConfig(foreground=Fore.GREEN)
+default_prt = ColorprtConfig(foreground=Fore.WHITE)
 
 
 def parse_res_json(rjson: dict):
@@ -32,5 +37,3 @@ def is_contains_chinese(strs: str):
 
 def get_salt() -> str:
     return str(random.randint(32768, 65536))
-
-

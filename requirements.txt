@@ -1,2 +1,4 @@
-requests==2.27.1
+requests~=2.27.1
 pyinstaller
+
+pyperclip~=1.8.2

@@ -5,11 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['translate.py'],
+    ['TranService.py'],
     pathex=[],
     binaries=[],
-    datas=[('./utils/lang_tb', './utils'),
-            ('./utils/welcome', './utils')],
+    datas=[('./utils/lang_tb', './utils'), ('./utils/welcome', './utils'), ('./utils/query_help_menu', './utils')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -27,7 +26,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='translate',
+    name='trans',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -47,5 +46,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='translate',
+    name='trans',
 )

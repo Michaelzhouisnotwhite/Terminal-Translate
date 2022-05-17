@@ -1,15 +1,18 @@
 import os
 import json
+from typing import Any
 
-
-DEBUG = True
-
+try:
+    DEBUG = os.environ['TRANS_DEBUG']
+except KeyError:
+    DEBUG = False
 
 __ENDPOINT = 'http://api.fanyi.baidu.com'
 __PATH = '/api/trans/vip/translate'
 REQUEST_URL = __ENDPOINT + __PATH
 
 LANG_TABLE = f'{os.path.dirname(os.path.abspath(__file__))}/lang_tb'
+QUERY_HELP = f'{os.path.dirname(os.path.abspath(__file__))}/query_help_menu'
 WELCOME = f'{os.path.dirname(os.path.abspath(__file__))}/welcome'
 
 
@@ -18,7 +21,6 @@ class HistoryTool:
 
     def __init__(self) -> None:
         self.check_envs()
-        self.history = []
 
     def check_envs(self):
         try:
@@ -39,22 +41,35 @@ class HistoryTool:
             f = open(self.HISTORY, 'w')
             f.close()
 
-    def write(self, one_record):
-        f = open(self.HISTORY, 'r')
+    def write(self, one_record: Any):
+        history = []
+        f = open(self.HISTORY, 'r', encoding='utf8')
         try:
-            self.history = json.load(f)
+            history = json.load(f)
             f.close()
         except json.JSONDecodeError as e:
             if DEBUG:
                 print(e)
 
             f.close()
-            ff = open(self.HISTORY, 'w')
-            json.dump(self.history, ff)
+            ff = open(self.HISTORY, 'w', encoding='utf8')
+            json.dump(history, ff)
+            ff.close()
 
-        self.history.append(one_record)
-        with open(self.HISTORY, 'w') as f:
-            json.dump(self.history, f, indent=4, ensure_ascii=False)
+        history.append(one_record)
+        with open(self.HISTORY, 'w', encoding='utf8') as f:
+            json.dump(history, f, indent=4, ensure_ascii=False)
+
+    def get_content(self):
+        with open(self.HISTORY, 'r', encoding='utf8') as f:
+            try:
+                history = json.load(f)
+            except json.JSONDecodeError as e:
+                if DEBUG:
+                    print(e)
+                return []
+
+        return history
 
 
 class ConfigTools:
@@ -69,7 +84,7 @@ class ConfigTools:
         self.appkey = ''
         self.from_lang = ''
         self.to_lang = ''
-        
+
         self.check_config()
 
     def check_envs(self):

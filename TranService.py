@@ -1,25 +1,30 @@
+import json
+
 from utils import *
 from utils import settings
 import argparse
-from trans_tools import TranslateTools
+from TransTools import TranslateTools
 import sys
 import pyperclip
 
 
-def get_args():
+def trans_args():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
     with open(LANG_TABLE, 'r') as f:
         lang_tb = f.read()
+    with open(QUERY_HELP, 'r') as f:
+        query_help_menu = f.read()
     parser.add_argument(
-        'query', help="target translate words. Enter number '0' to activate command mode.", type=str)
+        'query', help=f"target translate words. Enter number to select translate options.\n{query_help_menu}", type=str)
     parser.add_argument('-f', '--from_lang', help=f"language you use\n{lang_tb}", default="auto", type=str)
     parser.add_argument('-t', '--to_lang', help="translate to the lang", default='zh')
-    parser.add_argument('-r', help='write to history', action='store_true')
+    parser.add_argument('-r', help='don\'t add to history', action='store_false')
     args = parser.parse_args()
     return args.query, args.from_lang, args.to_lang, args.r
 
 
 class TranService(object):
+
     def __init__(self, query, from_lang='auto', to_lang='zh', history=False) -> None:
         self.from_lang = from_lang
         self.to_lang = to_lang
@@ -37,6 +42,9 @@ class TranService(object):
             # clipboard mode
             self.clipboard_mode()
 
+        elif query == '2':
+            self.show_history()
+
         elif len(query) > 0:
             if is_contains_chinese(query) and self.to_lang == 'zh':
                 self.to_lang = 'en'
@@ -44,12 +52,24 @@ class TranService(object):
             print(trans_res.format_show())
             self.exit()
 
+        else:
+            self.exit()
+
+    def show_history(self):
+        content = HistoryTool().get_content()
+        if len(content) > 0:
+            for his in content:
+                print(json.dumps(his, indent=4, ensure_ascii=False))
+        else:
+            warning_prt("History Empty")
+
     def __del__(self):
         if DEBUG:
             print("__del__")
         pass
 
-    def exit(self):
+    @staticmethod
+    def exit():
         # self.__del__()
         sys.exit(0)
 
@@ -57,8 +77,9 @@ class TranService(object):
         pass
 
     def clipboard_mode(self):
+        default_prt("Translate Clipboard Mode")
         while True:
-            print('> waiting for new clipboard ...')
+            default_prt('> waiting for new clipboard ...')
             try:
                 clip_cache = pyperclip.waitForNewPaste()
 
@@ -73,12 +94,12 @@ class TranService(object):
             except KeyboardInterrupt as e:
                 if DEBUG:
                     print(e)
-                print('See you next time')
+                success_prt('See you next time')
                 self.exit()
 
 
 def main():
-    TranService(*get_args())
+    TranService(*trans_args())
 
 
 if __name__ == "__main__":

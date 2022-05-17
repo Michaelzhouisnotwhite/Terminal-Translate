@@ -42,6 +42,7 @@ MANIFEST
 *.manifest
 *.spec
 !translate.spec
+!trans.spec
 
 # Installer logs
 pip-log.txt

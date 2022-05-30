@@ -10,7 +10,7 @@ except KeyError:
 __ENDPOINT = 'http://api.fanyi.baidu.com'
 __PATH = '/api/trans/vip/translate'
 REQUEST_URL = __ENDPOINT + __PATH
-
+WORKSPACE_FOLDER = r'D:\Repository\Terminal-Translate'
 LANG_TABLE = f'{os.path.dirname(os.path.abspath(__file__))}/lang_tb'
 QUERY_HELP = f'{os.path.dirname(os.path.abspath(__file__))}/query_help_menu'
 WELCOME = f'{os.path.dirname(os.path.abspath(__file__))}/welcome'
@@ -23,12 +23,14 @@ class HistoryTool:
         self.check_envs()
 
     def check_envs(self):
+        if DEBUG:
+            os.environ['TRANSLATE_HIS'] = f'{WORKSPACE_FOLDER}\\.trans_config'
         try:
             tran_his_folder = os.environ['TRANSLATE_HIS']
         except KeyError as e:
             if DEBUG:
                 print(e)
-                os.environ['TRANSLATE_HIS'] = r'D:\Code\Terminal-Translate\.trans_config'
+                # os.environ['TRANSLATE_HIS'] = r'D:\Code\Terminal-Translate\.trans_config'
             else:
                 os.environ['TRANSLATE_HIS'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
             tran_his_folder = os.environ['TRANSLATE_HIS']
@@ -88,12 +90,14 @@ class ConfigTools:
         self.check_config()
 
     def check_envs(self):
+        if DEBUG:
+            os.environ['TRANSLATE_CONFIG'] = fr'{WORKSPACE_FOLDER}\.trans_config'
+
         try:
             tran_config_folder = os.environ['TRANSLATE_CONFIG']
         except KeyError as e:
             if DEBUG:
                 print(e)
-                os.environ['TRANSLATE_CONFIG'] = r'D:\Code\Terminal-Translate\.trans_config'
             else:
                 os.environ['TRANSLATE_CONFIG'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
             tran_config_folder = os.environ['TRANSLATE_CONFIG']

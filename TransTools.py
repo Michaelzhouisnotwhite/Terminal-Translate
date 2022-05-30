@@ -29,7 +29,7 @@ class TranslateTools:
             if len(self.trans) == 1:
                 res = ''
             else:
-                res = str(colorstr('[{self.fl}-{self.tl}]', config=self.lang_output_config))
+                res = str(colorstr(f'[{self.fl}-{self.tl}]', config=self.lang_output_config))
                 # res = f'\33[36m[{self.fl}-{self.tl}]\33[0m\n'
             for idx, tran in enumerate(self.trans):
                 dst = tran['dst']

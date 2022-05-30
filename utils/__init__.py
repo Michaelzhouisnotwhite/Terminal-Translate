@@ -29,9 +29,13 @@ def make_md5(s, encoding='utf-8'):
 
 # 检验是否含有中文字符
 def is_contains_chinese(strs: str):
+    chinese_count = 0
     for _char in strs:
         if '\u4e00' <= _char <= '\u9fa5':
-            return True
+            chinese_count += 1
+
+    if chinese_count / len(strs) > 0.5:
+        return True
     return False
 
 

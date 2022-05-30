@@ -1,5 +1,7 @@
 import json
 
+from colorprt import colorprt
+
 from utils import *
 from utils import settings
 import argparse
@@ -79,17 +81,20 @@ class TranService(object):
     def clipboard_mode(self):
         default_prt("Translate Clipboard Mode")
         while True:
-            default_prt('> waiting for new clipboard ...')
+            default_prt(f'> waiting for new clipboard ...', end="")
+            colorprt(f'[{self.from_lang} - {self.to_lang}]', Fore.BLUE)
             try:
                 clip_cache = pyperclip.waitForNewPaste()
-
-                if is_contains_chinese(clip_cache) and self.to_lang == 'zh':
+                if len(clip_cache) <= 0:
+                    continue
+                if is_contains_chinese(clip_cache):
                     self.to_lang = 'en'
                 else:
                     self.from_lang = 'auto'
                     self.to_lang = 'zh'
 
                 trans_res = self.trans_tools.translate(clip_cache, self.from_lang, self.to_lang, self.history)
+
                 print(trans_res.format_show())
             except KeyboardInterrupt as e:
                 if DEBUG:

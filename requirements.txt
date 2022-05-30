@@ -2,3 +2,5 @@ requests~=2.27.1
 pyinstaller
 
 pyperclip~=1.8.2
+
+colorprt~=2.0.1

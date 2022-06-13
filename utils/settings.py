@@ -1,12 +1,18 @@
-import os
 import json
+import os
+import platform
+import sys
 from typing import Any
+
+from colorprt import Fore, colorprt
+from colorprt.default import error, warn
 
 try:
     DEBUG = os.environ['TRANS_DEBUG']
 except KeyError:
     DEBUG = False
 
+OS_TYPE = platform.system()
 __ENDPOINT = 'http://api.fanyi.baidu.com'
 __PATH = '/api/trans/vip/translate'
 REQUEST_URL = __ENDPOINT + __PATH
@@ -32,7 +38,16 @@ class HistoryTool:
                 print(e)
                 # os.environ['TRANSLATE_HIS'] = r'D:\Code\Terminal-Translate\.trans_config'
             else:
-                os.environ['TRANSLATE_HIS'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
+                if OS_TYPE == "Windows":
+                    os.environ['TRANSLATE_HIS'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
+                    
+                elif OS_TYPE == "Linux":
+                    os.environ['TRANSLATE_HIS'] = os.path.join(os.getenv('HOME'), '.trans_config')
+                    
+                else:
+                    error("Can't recognize this os platform!")
+                    sys.exit(-1)
+                    
             tran_his_folder = os.environ['TRANSLATE_HIS']
 
         self.HISTORY = os.path.join(tran_his_folder, 'history.json')
@@ -99,7 +114,16 @@ class ConfigTools:
             if DEBUG:
                 print(e)
             else:
-                os.environ['TRANSLATE_CONFIG'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
+                if OS_TYPE == "Windows":
+                    os.environ['TRANSLATE_CONFIG'] = os.path.join(os.getenv('USERPROFILE'), '.trans_config')
+                    
+                elif OS_TYPE == "Linux":
+                    os.environ['TRANSLATE_CONFIG'] = os.path.join(os.getenv('HOME'), '.trans_config')
+                    
+                else:
+                    error("Can't recognize current os platform.")
+                    sys.exit(-1)
+                    
             tran_config_folder = os.environ['TRANSLATE_CONFIG']
 
         self.CONFIG_JSON = os.path.join(tran_config_folder, 'config.json')

@@ -7,7 +7,7 @@ from utils import settings
 import argparse
 from TransTools import TranslateTools
 import sys
-import pyperclip
+from utils.clipboard import get_clipboard
 
 
 def trans_args():
@@ -84,7 +84,7 @@ class TranService(object):
             default_prt(f'> waiting for new clipboard ...', end="")
             colorprt(f'[{self.from_lang} - {self.to_lang}]', Fore.BLUE)
             try:
-                clip_cache = pyperclip.waitForNewPaste()
+                clip_cache = get_clipboard()
                 if len(clip_cache) <= 0:
                     continue
                 if is_contains_chinese(clip_cache):
@@ -101,6 +101,11 @@ class TranService(object):
                     print(e)
                 success_prt('See you next time')
                 self.exit()
+
+    @staticmethod
+    def pretty_str(src: str):
+        
+        pass
 
 
 def main():

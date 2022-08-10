@@ -104,7 +104,7 @@ class TranService(object):
 
     @staticmethod
     def pretty_str(src: str):
-        
+
         pass
 
 

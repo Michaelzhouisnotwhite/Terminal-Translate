@@ -5,9 +5,9 @@ from .settings import *
 import random
 from colorprt import Fore, ColorprtConfig
 
-warning_prt = ColorprtConfig(foreground=Fore.RED)
-success_prt = ColorprtConfig(foreground=Fore.GREEN)
-default_prt = ColorprtConfig(foreground=Fore.WHITE)
+warning_prt = ColorprtConfig(Fore.RED)
+success_prt = ColorprtConfig(Fore.GREEN)
+default_prt = ColorprtConfig(Fore.WHITE)
 
 
 def parse_res_json(rjson: dict):

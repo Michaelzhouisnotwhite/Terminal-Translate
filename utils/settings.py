@@ -4,8 +4,7 @@ import platform
 import sys
 from typing import Any
 
-from colorprt import Fore, colorprt
-from colorprt.default import error, warn
+from colorprt.default import error_color, warn_color
 
 try:
     DEBUG = os.environ['TRANS_DEBUG']
@@ -45,7 +44,7 @@ class HistoryTool:
                     os.environ['TRANSLATE_HIS'] = os.path.join(os.getenv('HOME'), '.trans_config')
                     
                 else:
-                    error("Can't recognize this os platform!")
+                    error_color.print("Can't recognize this os platform!")
                     sys.exit(-1)
                     
             tran_his_folder = os.environ['TRANSLATE_HIS']
@@ -121,7 +120,7 @@ class ConfigTools:
                     os.environ['TRANSLATE_CONFIG'] = os.path.join(os.getenv('HOME'), '.trans_config')
                     
                 else:
-                    error("Can't recognize current os platform.")
+                    error_color.print("Can't recognize current os platform.")
                     sys.exit(-1)
                     
             tran_config_folder = os.environ['TRANSLATE_CONFIG']
